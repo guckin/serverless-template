@@ -24,15 +24,16 @@ export class CdkTemplateStack extends Stack {
             maxCapacity: 10
         });
 
-        const uuidFunction = new NodejsFunction(this, 'UUIDFunction', {
-            entry:  path.join(__dirname, `./uuid.ts`),
-            handler: 'uuidHandler',
-            runtime: Runtime.NODEJS_16_X
-        });
-
-        const uuidInvoke = new LambdaInvoke(this, 'uuid', {
-            lambdaFunction: uuidFunction
-        });
+        // TODO: this function is not deploying
+        // const uuidFunction = new NodejsFunction(this, 'UUIDFunction', {
+        //     entry:  path.join(__dirname, `./uuid.ts`),
+        //     handler: 'uuidHandler',
+        //     runtime: Runtime.NODEJS_16_X
+        // });
+        //
+        // const uuidInvoke = new LambdaInvoke(this, 'uuid', {
+        //     lambdaFunction: uuidFunction
+        // });
 
         const dynamoPutItem = new DynamoPutItem(this, 'PutItem', {
             item: {
@@ -44,10 +45,10 @@ export class CdkTemplateStack extends Stack {
             resultPath: '$.Item',
         });
 
-        const stateMachineDefinition = uuidInvoke.next(dynamoPutItem);
+        // const stateMachineDefinition = uuidInvoke.next(dynamoPutItem);
 
         const stateMachine = new StateMachine(this, 'MyStateMachine', {
-            definition: stateMachineDefinition,
+            definition: dynamoPutItem,
             stateMachineType: StateMachineType.EXPRESS,
         });
 
@@ -62,6 +63,10 @@ export class CdkTemplateStack extends Stack {
                 schema: {
                     type: JsonSchemaType.OBJECT,
                     properties: {
+                        // TODO: remove me
+                        id: {
+                            type: JsonSchemaType.STRING
+                        },
                         name: {
                             type: JsonSchemaType.STRING
                         },
