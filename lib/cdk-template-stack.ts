@@ -72,7 +72,7 @@ export class CdkTemplateStack extends Stack {
             }
         );
 
-        api.root.addResource('/dogs').addMethod(
+        api.root.resourceForPath('/dogs').addMethod(
             'POST',
             StepFunctionsIntegration.startExecution(stateMachine),
             {
