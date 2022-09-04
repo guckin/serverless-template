@@ -14,7 +14,7 @@ export class CdkTemplateStack extends Stack {
 
         const stateMachine = new StateMachine(this, 'MyStateMachine', {
             definition: pass,
-            stateMachineType: StateMachineType.STANDARD,
+            stateMachineType: StateMachineType.EXPRESS,
         });
 
         const api = new RestApi(this, 'StepFunctionsRestApi', {
