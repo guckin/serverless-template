@@ -37,9 +37,9 @@ export class CdkTemplateStack extends Stack {
 
         const dynamoPutItem = new DynamoPutItem(this, 'PutItem', {
             item: {
-                id: DynamoAttributeValue.fromString(JsonPath.stringAt('$.id')),
-                name: DynamoAttributeValue.fromString(JsonPath.stringAt('$.name')),
-                breed: DynamoAttributeValue.fromString(JsonPath.stringAt('$.breed'))
+                id: DynamoAttributeValue.fromString(JsonPath.stringAt('$.body.id')),
+                name: DynamoAttributeValue.fromString(JsonPath.stringAt('$.body.name')),
+                breed: DynamoAttributeValue.fromString(JsonPath.stringAt('$.body.breed'))
             },
             table: dynamoTable,
             resultPath: '$.Item',
