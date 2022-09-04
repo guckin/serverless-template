@@ -3,7 +3,9 @@ import {Construct} from 'constructs';
 import {JsonPath, StateMachine, StateMachineType} from 'aws-cdk-lib/aws-stepfunctions';
 import {JsonSchemaType, Model, RestApi, StepFunctionsIntegration} from 'aws-cdk-lib/aws-apigateway';
 import {AttributeType, Table} from 'aws-cdk-lib/aws-dynamodb';
-import {DynamoAttributeValue, DynamoPutItem} from 'aws-cdk-lib/aws-stepfunctions-tasks';
+import {DynamoAttributeValue, DynamoPutItem, LambdaInvoke} from 'aws-cdk-lib/aws-stepfunctions-tasks';
+import {Code, Function, Runtime} from 'aws-cdk-lib/aws-lambda';
+import * as path from 'path';
 
 export class CdkTemplateStack extends Stack {
     constructor(scope: Construct, id: string, props?: StackProps) {
@@ -21,9 +23,19 @@ export class CdkTemplateStack extends Stack {
             maxCapacity: 10
         });
 
-        const pass = new DynamoPutItem(this, 'PutItem', {
+        const uuidFunction = new Function(this, 'UUIDFunction', {
+            code: Code.fromAsset(path.join(__dirname, 'uuid.js')),
+            handler: 'uuidHandler',
+            runtime: Runtime.NODEJS_16_X
+        });
+
+        const uuidInvoke = new LambdaInvoke(this, 'uuid', {
+            lambdaFunction: uuidFunction
+        });
+
+        const dynamoPutItem = new DynamoPutItem(this, 'PutItem', {
             item: {
-                id: DynamoAttributeValue.fromString(JsonPath.stringAt('States.UUID()')),
+                id: DynamoAttributeValue.fromString(JsonPath.stringAt('$.id')),
                 name: DynamoAttributeValue.fromString(JsonPath.stringAt('$.name')),
                 breed: DynamoAttributeValue.fromString(JsonPath.stringAt('$.breed'))
             },
@@ -31,8 +43,10 @@ export class CdkTemplateStack extends Stack {
             resultPath: '$.Item',
         });
 
+        const stateMachineDefinition = uuidInvoke.next(dynamoPutItem);
+
         const stateMachine = new StateMachine(this, 'MyStateMachine', {
-            definition: pass,
+            definition: stateMachineDefinition,
             stateMachineType: StateMachineType.EXPRESS,
         });
 
