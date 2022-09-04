@@ -4,7 +4,9 @@ import {JsonPath, StateMachine, StateMachineType} from 'aws-cdk-lib/aws-stepfunc
 import {JsonSchemaType, Model, RestApi, StepFunctionsIntegration} from 'aws-cdk-lib/aws-apigateway';
 import {AttributeType, Table} from 'aws-cdk-lib/aws-dynamodb';
 import {DynamoAttributeValue, DynamoPutItem, LambdaInvoke} from 'aws-cdk-lib/aws-stepfunctions-tasks';
-import {Code, Function, Runtime} from 'aws-cdk-lib/aws-lambda';
+import {Runtime} from 'aws-cdk-lib/aws-lambda';
+import {NodejsFunction} from 'aws-cdk-lib/aws-lambda-nodejs';
+import * as path from 'path';
 
 export class CdkTemplateStack extends Stack {
     constructor(scope: Construct, id: string, props?: StackProps) {
@@ -22,9 +24,9 @@ export class CdkTemplateStack extends Stack {
             maxCapacity: 10
         });
 
-        const uuidFunction = new Function(this, 'UUIDFunction', {
-            code: Code.fromAsset(__dirname),
-            handler: 'uuid.uuidHandler',
+        const uuidFunction = new NodejsFunction(this, 'UUIDFunction', {
+            entry:  path.join(__dirname, `./uuid.ts`),
+            handler: 'uuidHandler',
             runtime: Runtime.NODEJS_16_X
         });
 
