@@ -9,7 +9,7 @@ import * as path from 'path';
 export class HelloWorldStack extends Construct {
     constructor(scope: Construct, id: string, props?: StackProps) {
         super(scope, id);
-        new SomeComponent(scope, 'InvitesStack', props);
+        new SomeComponent(scope, 'SomeComponent', props);
     }
 }
 
@@ -40,5 +40,3 @@ export class SomeComponent extends Stack {
           },
     });
 }
-
-console.log('HERE', path.join(__dirname, 'invite-create.ts'))
