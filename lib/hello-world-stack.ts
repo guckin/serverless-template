@@ -7,9 +7,9 @@ import {Construct} from 'constructs';
 import * as path from 'path';
 import { helloWorldHandler, helloWorldHandlerName, hellowWorldPath } from './container';
 
-export class HelloWorldStack extends Construct {
-    constructor(scope: Construct, id: string) {
-        super(scope, id);       
+export class HelloWorldStack extends Stack {
+    constructor(scope: Construct, id: string, props?: StackProps) {
+        super(scope, id, props);       
         this.someTable();
         this.someTopic();
         this.someFunction();
