@@ -10,22 +10,22 @@ import { helloWorldHandler, helloWorldHandlerName, hellowWorldPath } from './con
 export class HelloWorldStack extends Stack {
     constructor(scope: Construct, id: string, props?: StackProps) {
         super(scope, id, props);       
-        this.someTable();
-        this.someTopic();
-        this.someFunction();
+        this.createTable();
+        this.createTopic();
+        this.createFunction();
     }
 
-    private readonly someTable = () => new Table(this, 'HelloworldTable', {
+    private readonly createTable = () => new Table(this, 'HelloworldTable', {
         partitionKey: {
             name: 'id',
             type: AttributeType.STRING
         },
-        tableName: 'SomeTable',
+        tableName: 'HelloWorldTable',
     });
 
-    private readonly someTopic = () => new Topic(this, 'HelloWorldTopic');
+    private readonly createTopic = () => new Topic(this, 'HelloWorldTopic');
 
-    private readonly someFunction = () => new NodejsFunction(this, 'HelloWorldFunction ', {
+    private readonly createFunction = () => new NodejsFunction(this, 'HelloWorldFunction ', {
         entry: hellowWorldPath,
         handler: helloWorldHandlerName,
         runtime: Runtime.NODEJS_16_X,
