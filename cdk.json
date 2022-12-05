@@ -1,5 +1,5 @@
 {
-  "app": "npx ts-node --prefer-ts-exts bin/create-hello-world.ts",
+  "app": "npx ts-node --prefer-ts-exts src/create-hello-world.ts",
   "watch": {
     "include": [
       "**"
