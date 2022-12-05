@@ -10,10 +10,10 @@ test('Logs hello world', async () => {
     expect(logger.log).toHaveBeenCalledWith('Hello World');
 });
 
-test('returns 200 Hello World', () => {
+test('returns 200 Hello World', async () => {
     const handler = new HelloWorldHandler(logger);
 
-    const response = handler.invoke();
+    const response = await handler.invoke();
     
     expect(response.statusCode).toBe(200);
     expect(response.body).toBe("{\"hello\":\"World\"}");

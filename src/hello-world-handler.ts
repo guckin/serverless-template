@@ -6,12 +6,12 @@ export class HelloWorldHandler {
     constructor(private readonly logger: Logger) {
     }
 
-    invoke = (): APIGatewayProxyStructuredResultV2 => {
+    invoke = (): Promise<APIGatewayProxyStructuredResultV2> => {
         this.logger.log('Hello World');
-        return {
+        return Promise.resolve({
             statusCode: 200,
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({hello: 'World'})
-        };
+        });
     }
 }
