@@ -2,7 +2,7 @@
   "name": "cdk-template",
   "version": "0.1.0",
   "bin": {
-    "cdk-template": "bin/create-hello-world.js"
+    "cdk-template": "dist/create-hello-world.js"
   },
   "scripts": {
     "build": "tsc",
@@ -11,6 +11,7 @@
     "cdk": "cdk"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.109",
     "@types/jest": "^27.5.2",
     "@types/node": "16.11.6",
     "@types/prettier": "2.6.0",
@@ -27,5 +28,16 @@
     "constructs": "^10.0.0",
     "source-map-support": "^0.5.21",
     "uuid": "^8.3.2"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testEnvironment": "node",
+    "clearMocks": true,
+    "testMatch": [
+      "**/*.test.ts"
+    ]
   }
 }
