@@ -37,7 +37,7 @@ export class HelloWorldServiceStack extends Stack {
        const serverlessRestApi = new ServerlessRestApi(this, 'HelloWorldApi)');
        serverlessRestApi.addEndpoint('GetHelloWorld', {
             method: 'GET',
-            path: '/hello-world',
+            path: 'hello-world',
             entry: hellowWorldPath,
             handler: helloWorldHandlerName,
        });
