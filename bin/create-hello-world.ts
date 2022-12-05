@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { HelloWorldStack } from '../lib/hello-world-stack';
+import { HelloWorldServiceStack } from '../lib/hello-world-stack';
 
 const app = new cdk.App();
-new HelloWorldStack(app, 'CdkTemplateStack', {
+new HelloWorldServiceStack(app, 'HelloWorld', {
     env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION },
 });
