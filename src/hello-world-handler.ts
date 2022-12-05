@@ -10,7 +10,8 @@ export class HelloWorldHandler {
         this.logger.log('Hello World');
         return {
             statusCode: 200,
-            body: 'Hello World!'
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({hello: 'World'})
         };
     }
 }

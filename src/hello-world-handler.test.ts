@@ -16,6 +16,6 @@ test('returns 200 Hello World', () => {
     const response = handler.invoke();
     
     expect(response.statusCode).toBe(200);
-    expect(response.body).toBe('Hello World!');
+    expect(response.body).toBe("{\"hello\":\"World\"}");
 });
 
