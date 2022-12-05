@@ -34,7 +34,7 @@ export class HelloWorldServiceStack extends Stack {
     }
 
     private createApi() {
-       const serverlessRestApi = new ServerlessRestApi(this, 'HelloWorldApi)');
+       const serverlessRestApi = new ServerlessRestApi(this, 'HelloWorldApi');
        serverlessRestApi.addEndpoint('GetHelloWorld', {
             method: 'GET',
             path: 'hello-world',
@@ -54,7 +54,9 @@ export type RestEndpointConfiguration = Readonly<{
 
 class ServerlessRestApi {
 
-    private readonly api = new RestApi(this.scope, this.id);
+    private readonly api = new RestApi(this.scope, this.id, {
+        cloudWatchRole: true
+    });
 
     private readonly lambdaFactory = new NodeJsLambdaFactory(this.scope);
 
