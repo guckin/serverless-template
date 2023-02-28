@@ -2,9 +2,6 @@ import { APIGatewayProxyStructuredResultV2 } from 'aws-lambda';
 
 export class HelloWorldHandler {
 
-    constructor() {
-    }
-
     invoke = (): Promise<APIGatewayProxyStructuredResultV2> => {
         return Promise.resolve({
             statusCode: 200,
