@@ -1,13 +1,11 @@
-import { Logger } from './logger';
 import { APIGatewayProxyStructuredResultV2 } from 'aws-lambda';
 
 export class HelloWorldHandler {
 
-    constructor(private readonly logger: Logger) {
+    constructor() {
     }
 
     invoke = (): Promise<APIGatewayProxyStructuredResultV2> => {
-        this.logger.log('Hello World');
         return Promise.resolve({
             statusCode: 200,
             headers: {'Content-Type': 'application/json'},
@@ -15,3 +13,5 @@ export class HelloWorldHandler {
         });
     }
 }
+
+export const handler = new HelloWorldHandler().invoke;

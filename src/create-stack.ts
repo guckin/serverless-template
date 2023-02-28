@@ -6,4 +6,5 @@ import { HelloWorldServiceStack } from './hello-world-stack';
 const app = new cdk.App();
 new HelloWorldServiceStack(app, 'HelloWorld', {
     env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION },
+    stage: process.env.Stage || 'dev',
 });
