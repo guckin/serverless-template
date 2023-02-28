@@ -36,7 +36,7 @@ export class HelloWorldServiceStack extends Stack {
             const cert = Certificate.fromCertificateArn(
               this,
               'cert',
-              'arn:aws:acm:us-east-1:084882962555:certificate/bec1fe74-5ef5-4771-8190-6b9f6c75799a'
+              'arn:aws:acm:us-east-1:084882962555:certificate/729d47e9-8d3b-439c-b4b5-e74a9a33cbce'
             );
 
             const domainName = new DomainName(this, 'DomainName', {
