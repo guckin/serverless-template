@@ -40,7 +40,7 @@ export class HelloWorldServiceStack extends Stack {
             );
 
             const domainName = new DomainName(this, 'DomainName', {
-                domainName: `api.${props.stage}.helpfl.click`,
+                domainName: `${props.stage}.api.helpfl.click`,
                 certificate: cert,
                 endpointType: EndpointType.EDGE,
             });
