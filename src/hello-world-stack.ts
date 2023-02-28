@@ -1,105 +1,55 @@
 import {Stack, StackProps} from 'aws-cdk-lib';
-import { Integration, LambdaIntegration, RestApi } from 'aws-cdk-lib/aws-apigateway';
-import { AttributeType, Table } from 'aws-cdk-lib/aws-dynamodb';
-import { Runtime } from 'aws-cdk-lib/aws-lambda';
-import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
-import { Topic } from 'aws-cdk-lib/aws-sns';
+import * as path from 'path';
 import {Construct} from 'constructs';
-import { helloWorldHandlerName, hellowWorldPath } from './container';
+import {NodejsFunction} from 'aws-cdk-lib/aws-lambda-nodejs';
+import {Runtime} from 'aws-cdk-lib/aws-lambda';
+import {BasePathMapping, Cors, DomainName, EndpointType, LambdaIntegration, RestApi} from 'aws-cdk-lib/aws-apigateway';
+import {Certificate} from 'aws-cdk-lib/aws-certificatemanager';
+
+export type HelloWorldProps = StackProps & {
+    stage: string,
+};
 
 export class HelloWorldServiceStack extends Stack {
-    constructor(
-        scope: Construct,
-        id: string,
-        props?: StackProps
-    ) {
-        super(scope, id, props);
-        this.createTable();
-        this.createTopic();
-        this.createApi();
-    }
+    constructor(scope: Construct, id: string, props: HelloWorldProps) {
+            super(scope, id, props);
 
-    private createTable() {
-        new Table(this, 'HelloworldTable', {
-            partitionKey: {
-                name: 'id',
-                type: AttributeType.STRING
-            },
-            tableName: 'HelloWorldTable',
-        });    
-    }
+            const apiFunction = new NodejsFunction(this, 'ApiFunction', {
+                entry: path.join(__dirname, '..', 'build', 'hello-world-handler.js'),
+                handler: 'handler',
+                runtime: Runtime.NODEJS_16_X,
+                environment: {
+                    NODE_OPTIONS: '--enable-source-maps',
+                }
+            });
 
-    private createTopic() { 
-        new Topic(this, 'HelloWorldTopic'); 
-    }
+            const lambdaIntegration = new LambdaIntegration(apiFunction);
 
-    private createApi() {
-       const serverlessRestApi = new ServerlessRestApi(this, 'HelloWorldApi');
-       serverlessRestApi.addEndpoint('GetHelloWorld', {
-            method: 'GET',
-            path: 'hello-world',
-            entry: hellowWorldPath,
-            handler: helloWorldHandlerName,
-       });
-    }
+            const api = new RestApi(this, 'API', {
+                defaultCorsPreflightOptions: {
+                    allowOrigins: Cors.ALL_ORIGINS,
+                    allowMethods: Cors.ALL_METHODS
+                }
+            });
+            api.root.addMethod('GET', lambdaIntegration);
 
-}
+            const cert = Certificate.fromCertificateArn(
+              this,
+              'cert',
+              'arn:aws:acm:us-east-1:084882962555:certificate/729d47e9-8d3b-439c-b4b5-e74a9a33cbce'
+            );
 
-export type RestEndpointConfiguration = Readonly<{
-    entry: string;
-    handler: string;
-    path: string;
-    method: string;
-}>;
+            const domainName = new DomainName(this, 'DomainName', {
+                domainName: `${props.stage}.api.helpfl.click`,
+                certificate: cert,
+                endpointType: EndpointType.EDGE,
+            });
 
-class ServerlessRestApi {
+            new BasePathMapping(this, 'ApiMapping', {
+                domainName: domainName,
+                restApi: api,
+                basePath: 'hello-world'
+            });
 
-    private readonly api = new RestApi(this.scope, this.id, {
-        cloudWatchRole: true
-    });
-
-    private readonly lambdaFactory = new NodeJsLambdaFactory(this.scope);
-
-    constructor(private readonly scope: Construct, private readonly id: string) {
-    }
-
-    addEndpoint(id: string, {entry, handler, path, method}: RestEndpointConfiguration) {
-        const lambda = this.createLambda(id, entry, handler);
-        const lambdaIntegration = this.createIntegration(lambda);
-        this.createResource(path, method, lambdaIntegration);
-    }
-
-    private createIntegration(lambda: NodejsFunction): LambdaIntegration {
-        return new LambdaIntegration(lambda);
-    }
-
-    private createLambda(id: string, entry: string, handler: string): NodejsFunction {
-        return this.lambdaFactory.createLambda(id, entry, handler);
-    }
-
-    private createResource(path: string, method: string, integration: Integration): void {
-        this.api.root.addResource(path).addMethod(method, integration);
-    }
-}
-
-
-export interface LambdaProps {
-    readonly entry: string, 
-    readonly handler: string
-}
-class NodeJsLambdaFactory {
-
-    constructor(private readonly scope: Construct) {
-    }
-
-    createLambda(id: string, entry: string, handler: string): NodejsFunction {
-        return new NodejsFunction(this.scope, id, {
-            entry,
-            handler,
-            runtime: Runtime.NODEJS_16_X,
-            environment: {
-                NODE_OPTIONS: '--enable-source-maps',
-              },
-        });
     }
 }
