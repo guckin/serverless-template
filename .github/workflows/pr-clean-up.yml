@@ -25,7 +25,7 @@ jobs:
         uses: youyo/aws-cdk-github-actions@v2
         with:
           cdk_subcommand: 'destroy'
-          cdk_args: '--require-approval never'
+          cdk_args: '--force'
           actions_comment: true
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
