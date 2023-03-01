@@ -4,21 +4,15 @@ import { terser } from 'rollup-plugin-terser';
 import typescript from '@rollup/plugin-typescript';
 import json from '@rollup/plugin-json';
 
-function bundleHandler(path) {
+function bundleHandler(input, output) {
     return {
-        input: `src/${path}.ts`,
+        input,
         output: {
-            file: `build/${path}.js`,
+            file: output,
             sourcemap: true
         },
         plugins: [
-            typescript({
-                compilerOptions: {
-                    target: 'ES2020',
-                    module: 'esnext',
-                    moduleResolution: 'node'
-                }
-            }),
+            typescript(),
             resolve({exportConditions: ["node"]}),
             commonjs(),
             terser(),
@@ -28,5 +22,5 @@ function bundleHandler(path) {
 }
 
 export default [
-    bundleHandler('hello-world-handler'),
+    bundleHandler('src/hello-world-handler.ts', 'build/hello-world-handler.js'),
 ];

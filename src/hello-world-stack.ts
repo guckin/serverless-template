@@ -6,6 +6,7 @@ import {Cors, EndpointType, LambdaIntegration, RestApi} from 'aws-cdk-lib/aws-ap
 import {Certificate} from 'aws-cdk-lib/aws-certificatemanager';
 import {ARecord, HostedZone, RecordTarget} from 'aws-cdk-lib/aws-route53';
 import {ApiGateway} from 'aws-cdk-lib/aws-route53-targets';
+import fileDirName from './path-helpers';
 
 export type HelloWorldProps = StackProps & {
     stage: string,
@@ -15,10 +16,12 @@ export class HelloWorldServiceStack extends Stack {
     constructor(scope: Construct, id: string, props: HelloWorldProps) {
         super(scope, id, props);
 
+        const {__dirname} = fileDirName(import.meta.url);
+
         const apiFunction = new Function(this, 'MyFunction', {
           runtime: Runtime.NODEJS_16_X,
           handler: 'hello-world-handler.handler',
-          code: Code.fromAsset(path.join(__dirname, '..', 'build'))
+          code: Code.fromAsset(path.join(__dirname, '..', 'build')),
         });
 
         const lambdaIntegration = new LambdaIntegration(apiFunction);
