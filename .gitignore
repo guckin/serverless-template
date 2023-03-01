@@ -8,3 +8,4 @@ cdk.out
 
 .idea
 /.idea/
+/cdk.context.json
