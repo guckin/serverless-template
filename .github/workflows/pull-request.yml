@@ -142,7 +142,7 @@ jobs:
 
       - name: E2E Test
         run: |
-          npm run e2e
+          npm run test:e2e
         env:
           STAGE: ${{ env.STAGE }}
 
