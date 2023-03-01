@@ -4,6 +4,8 @@ import {Construct} from 'constructs';
 import {Code, Runtime, Function} from 'aws-cdk-lib/aws-lambda';
 import {BasePathMapping, Cors, DomainName, EndpointType, LambdaIntegration, RestApi} from 'aws-cdk-lib/aws-apigateway';
 import {Certificate} from 'aws-cdk-lib/aws-certificatemanager';
+import {ARecord, HostedZone, RecordTarget} from 'aws-cdk-lib/aws-route53';
+import {ApiGateway, CloudFrontTarget} from 'aws-cdk-lib/aws-route53-targets';
 
 export type HelloWorldProps = StackProps & {
     stage: string,
@@ -21,7 +23,7 @@ export class HelloWorldServiceStack extends Stack {
 
         const lambdaIntegration = new LambdaIntegration(apiFunction);
 
-        const api = new RestApi(this, 'API', {
+        const api = new RestApi(this, `${props.stage}Api`, {
             defaultCorsPreflightOptions: {
                 allowOrigins: Cors.ALL_ORIGINS,
                 allowMethods: Cors.ALL_METHODS
@@ -45,6 +47,15 @@ export class HelloWorldServiceStack extends Stack {
             domainName: domainName,
             restApi: api,
             basePath: 'hello-world'
+        });
+
+
+        new ARecord(this, 'ARecord', {
+            recordName: domainName.domainName,
+            target: RecordTarget.fromAlias(new ApiGateway(api)),
+            zone: HostedZone.fromLookup(this, 'HostedZone', {
+                domainName: 'helpfl.click'
+            })
         });
 
     }
