@@ -2,7 +2,8 @@
   "name": "cdk-template",
   "version": "0.1.0",
   "scripts": {
-    "test": "jest",
+    "test": "jest src/**/*.test.ts",
+    "test:e2e": "jest src/**/*.e2e.ts",
     "build": "rollup -c --bundleConfigAsCjs",
     "transpile": "tsc",
     "lint": "eslint . --ext .ts --ignore-path .gitignore",
@@ -50,9 +51,6 @@
       "^.+\\.tsx?$": "ts-jest"
     },
     "testEnvironment": "node",
-    "clearMocks": true,
-    "testMatch": [
-      "**/*.test.ts"
-    ]
+    "clearMocks": true
   }
 }
