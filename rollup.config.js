@@ -18,11 +18,6 @@ function bundleHandler(input, output) {
             commonjs(),
             terser(),
             json()
-        ],
-        external: [
-            "@aws-sdk/client-dynamodb",
-            "@aws-sdk/client-secrets-manager",
-            "@aws-sdk/util-dynamodb"
         ]
     };
 }
