@@ -2,14 +2,16 @@
   "name": "cdk-template",
   "version": "0.1.0",
   "scripts": {
-    "test": "jest",
+    "test": "jest src/**/*.test.ts",
+    "test:e2e": "jest src/**/*.e2e.ts",
     "build": "rollup -c --bundleConfigAsCjs",
     "transpile": "tsc",
     "lint": "eslint . --ext .ts --ignore-path .gitignore",
     "lint:fix": "npm run lint -- --fix",
     "clean:install": "rm -rf node_modules && rm -rf package-lock.json && npm i",
     "clean:build": "rm -rf dist && rm -rf build && npm run build",
-    "clean:install:build": "npm run clean:install && npm run clean:build"
+    "clean:install:build": "npm run clean:install && npm run clean:build",
+    "compile": "tsc"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^24.0.1",
@@ -26,7 +28,6 @@
     "aws-cdk": "^2.53.0",
     "aws-cdk-lib": "2.40.0",
     "constructs": "^10.0.0",
-    "esbuild": "^0.15.16",
     "eslint": "^8.34.0",
     "eslint-plugin-unused-imports": "^2.0.0",
     "jest": "^27.5.1",
@@ -37,6 +38,7 @@
     "tslib": "^2.5.0",
     "typescript": "~4.9.3"
   },
+  "type": "module",
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.279.0",
     "@aws-sdk/client-secrets-manager": "^3.279.0",
@@ -49,9 +51,6 @@
       "^.+\\.tsx?$": "ts-jest"
     },
     "testEnvironment": "node",
-    "clearMocks": true,
-    "testMatch": [
-      "**/*.test.ts"
-    ]
+    "clearMocks": true
   }
 }

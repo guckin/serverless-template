@@ -1,10 +1,12 @@
 import {Stack, StackProps} from 'aws-cdk-lib';
 import * as path from 'path';
 import {Construct} from 'constructs';
-import {NodejsFunction} from 'aws-cdk-lib/aws-lambda-nodejs';
-import {Runtime} from 'aws-cdk-lib/aws-lambda';
-import {BasePathMapping, Cors, DomainName, EndpointType, LambdaIntegration, RestApi} from 'aws-cdk-lib/aws-apigateway';
+import {Code, Runtime, Function} from 'aws-cdk-lib/aws-lambda';
+import {Cors, EndpointType, LambdaIntegration, RestApi} from 'aws-cdk-lib/aws-apigateway';
 import {Certificate} from 'aws-cdk-lib/aws-certificatemanager';
+import {ARecord, HostedZone, RecordTarget} from 'aws-cdk-lib/aws-route53';
+import {ApiGateway} from 'aws-cdk-lib/aws-route53-targets';
+import fileDirName from './path-helpers';
 
 export type HelloWorldProps = StackProps & {
     stage: string,
@@ -12,44 +14,47 @@ export type HelloWorldProps = StackProps & {
 
 export class HelloWorldServiceStack extends Stack {
     constructor(scope: Construct, id: string, props: HelloWorldProps) {
-            super(scope, id, props);
+        super(scope, id, props);
 
-            const apiFunction = new NodejsFunction(this, 'ApiFunction', {
-                entry: path.join(__dirname, '..', 'build', 'hello-world-handler.js'),
-                handler: 'handler',
-                runtime: Runtime.NODEJS_16_X,
-                environment: {
-                    NODE_OPTIONS: '--enable-source-maps',
-                }
-            });
+        const {__dirname} = fileDirName(import.meta.url);
 
-            const lambdaIntegration = new LambdaIntegration(apiFunction);
+        const apiFunction = new Function(this, 'MyFunction', {
+          runtime: Runtime.NODEJS_16_X,
+          handler: 'hello-world-handler.handler',
+          code: Code.fromAsset(path.join(__dirname, '..', 'build')),
+        });
 
-            const api = new RestApi(this, 'API', {
-                defaultCorsPreflightOptions: {
-                    allowOrigins: Cors.ALL_ORIGINS,
-                    allowMethods: Cors.ALL_METHODS
-                }
-            });
-            api.root.addMethod('GET', lambdaIntegration);
+        const lambdaIntegration = new LambdaIntegration(apiFunction);
 
-            const cert = Certificate.fromCertificateArn(
-              this,
-              'cert',
-              'arn:aws:acm:us-east-1:084882962555:certificate/729d47e9-8d3b-439c-b4b5-e74a9a33cbce'
-            );
+        const api = new RestApi(this, `${props.stage}Api`, {
+            defaultCorsPreflightOptions: {
+                allowOrigins: Cors.ALL_ORIGINS,
+                allowMethods: Cors.ALL_METHODS
+            }
+        });
 
-            const domainName = new DomainName(this, 'DomainName', {
-                domainName: `${props.stage}.api.helpfl.click`,
-                certificate: cert,
-                endpointType: EndpointType.EDGE,
-            });
+        api.root.addMethod('GET', lambdaIntegration);
 
-            new BasePathMapping(this, 'ApiMapping', {
-                domainName: domainName,
-                restApi: api,
-                basePath: 'hello-world'
-            });
+        const cert = Certificate.fromCertificateArn(
+          this,
+          'cert',
+          'arn:aws:acm:us-east-1:084882962555:certificate/729d47e9-8d3b-439c-b4b5-e74a9a33cbce'
+        );
+
+        api.addDomainName('DomainName', {
+            domainName: `${props.stage}.api.helpfl.click`,
+            certificate: cert,
+            endpointType: EndpointType.EDGE,
+            basePath: 'hello-world'
+        });
+
+        new ARecord(this, 'ARecord', {
+            recordName: `${props.stage}.api.helpfl.click`,
+            target: RecordTarget.fromAlias(new ApiGateway(api)),
+            zone: HostedZone.fromLookup(this, 'HostedZone', {
+                domainName: 'helpfl.click'
+            })
+        });
 
     }
 }
