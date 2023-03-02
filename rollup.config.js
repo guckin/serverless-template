@@ -9,18 +9,24 @@ function bundleHandler(input, output) {
         input,
         output: {
             file: output,
-            sourcemap: true
+            sourcemap: true,
+            format: 'es'
         },
         plugins: [
             typescript(),
-            resolve({exportConditions: ["node"]}),
+            resolve({exportConditions: ["node"], preferBuiltins: true}),
             commonjs(),
             terser(),
             json()
         ],
+        external: [
+            "@aws-sdk/client-dynamodb",
+            "@aws-sdk/client-secrets-manager",
+            "@aws-sdk/util-dynamodb"
+        ]
     };
 }
 
 export default [
-    bundleHandler('src/hello-world-handler.ts', 'build/hello-world-handler.js'),
+    bundleHandler('src/hello-world-handler.ts', 'build/hello-world-handler.mjs'),
 ];
