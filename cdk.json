@@ -1,5 +1,5 @@
 {
-  "app": "npm run build && npm run compile && cp package.json build/package.json && node --es-module-specifier-resolution=node dist/create-stack.js",
+  "app": "npm run build && npx ts-node src/create-stack.ts",
   "watch": {
     "include": [
       "**"
