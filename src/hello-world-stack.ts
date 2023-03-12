@@ -16,9 +16,12 @@ export class HelloWorldServiceStack extends Stack {
         super(scope, id, props);
 
         const apiFunction = new Function(this, 'MyFunction', {
-          runtime: Runtime.NODEJS_16_X,
-          handler: 'hello-world-handler.handler',
-          code: Code.fromAsset(path.join(__dirname, '..', 'build')),
+            runtime: Runtime.NODEJS_16_X,
+            handler: 'hello-world-handler.handler',
+            code: Code.fromAsset(path.join(__dirname, '..', 'build')),
+            environment: {
+                STAGE: props.stage
+            }
         });
 
         const lambdaIntegration = new LambdaIntegration(apiFunction);
@@ -33,9 +36,9 @@ export class HelloWorldServiceStack extends Stack {
         api.root.addMethod('GET', lambdaIntegration);
 
         const cert = Certificate.fromCertificateArn(
-          this,
-          'cert',
-          'arn:aws:acm:us-east-1:084882962555:certificate/729d47e9-8d3b-439c-b4b5-e74a9a33cbce'
+            this,
+            'cert',
+            'arn:aws:acm:us-east-1:084882962555:certificate/729d47e9-8d3b-439c-b4b5-e74a9a33cbce'
         );
 
         api.addDomainName('DomainName', {
