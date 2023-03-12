@@ -41,6 +41,11 @@ jobs:
                 run: |
                     npm test
 
+            -   name:
+                uses: artiomtr/jest-coverage-report-action@v2
+                with:
+                    github-token: ${{ secrets.GITHUB_TOKEN }}
+
     synth:
         name: Synthesize
         runs-on: ubuntu-latest
