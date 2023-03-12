@@ -11,6 +11,10 @@ on:
       - 'tsconfig.json'
       - 'rollup.config.js'
 
+concurrency:
+  group: ${{ github.head_ref }}
+  cancel-in-progress: true
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -30,13 +34,14 @@ jobs:
         run: |
           npm test
 
-#      - name: Deploy
-#        uses: youyo/aws-cdk-github-actions@v2
-#        with:
-#          cdk_subcommand: 'deploy'
-#          cdk_args: '--require-approval never'
-#          actions_comment: false
-#        env:
-#          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#          AWS_DEFAULT_REGION: 'us-west-2'
+      - name: Deploy
+        uses: youyo/aws-cdk-github-actions@v2
+        with:
+          cdk_subcommand: 'deploy'
+          cdk_args: '--require-approval never'
+          actions_comment: false
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: 'us-west-2'
+          STAGE: 'prod'
