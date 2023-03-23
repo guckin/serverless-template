@@ -42,7 +42,7 @@ export class HelloWorldServiceStack extends Stack {
         );
 
         api.addDomainName('DomainName', {
-            domainName: `${props.stage}.api.helpfl.click`,
+            domainName: `${props.stage}-template.api.helpfl.click`,
             certificate: cert,
             endpointType: EndpointType.EDGE,
             basePath: 'hello-world'
