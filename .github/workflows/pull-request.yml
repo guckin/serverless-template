@@ -138,6 +138,8 @@ jobs:
                     npm run test:e2e
                 env:
                     STAGE: ${{ env.STAGE }}
+                    CLIENT_ID: ${{ secrets.CLIENT_ID }}
+                    CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
 
     diff:
         name: Diff
