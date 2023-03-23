@@ -36,7 +36,7 @@ export class HelloWorldServiceStack extends Stack {
         const authFn = new Function(this, 'authFn', {
             runtime: Runtime.NODEJS_16_X,
             handler: 'authorizer.handler',
-            code: Code.fromAsset(path.join(__dirname, '..', 'build', 'auth', 'authorizer')),
+            code: Code.fromAsset(path.join(__dirname, '..', 'build', 'auth')),
         });
 
         const authorizer = new RequestAuthorizer(this, 'booksAuthorizer', {
