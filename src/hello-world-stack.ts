@@ -49,7 +49,7 @@ export class HelloWorldServiceStack extends Stack {
         });
 
         new ARecord(this, 'ARecord', {
-            recordName: `${props.stage}.api.helpfl.click`,
+            recordName: `${props.stage}-template.api.helpfl.click`,
             target: RecordTarget.fromAlias(new ApiGateway(api)),
             zone: HostedZone.fromLookup(this, 'HostedZone', {
                 domainName: 'helpfl.click'
