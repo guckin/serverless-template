@@ -2,7 +2,7 @@ import {Stack, StackProps} from 'aws-cdk-lib';
 import * as path from 'path';
 import {Construct} from 'constructs';
 import {Code, Runtime, Function} from 'aws-cdk-lib/aws-lambda';
-import {Cors, EndpointType, LambdaIntegration, RestApi} from 'aws-cdk-lib/aws-apigateway';
+import {Cors, EndpointType, IdentitySource, LambdaIntegration, RequestAuthorizer, RestApi} from 'aws-cdk-lib/aws-apigateway';
 import {Certificate} from 'aws-cdk-lib/aws-certificatemanager';
 import {ARecord, HostedZone, RecordTarget} from 'aws-cdk-lib/aws-route53';
 import {ApiGateway} from 'aws-cdk-lib/aws-route53-targets';
@@ -18,7 +18,7 @@ export class HelloWorldServiceStack extends Stack {
         const apiFunction = new Function(this, 'MyFunction', {
             runtime: Runtime.NODEJS_16_X,
             handler: 'hello-world-handler.handler',
-            code: Code.fromAsset(path.join(__dirname, '..', 'build')),
+            code: Code.fromAsset(path.join(__dirname, '..', 'build', 'hello-world')),
             environment: {
                 STAGE: props.stage
             }
@@ -33,7 +33,20 @@ export class HelloWorldServiceStack extends Stack {
             }
         });
 
-        api.root.addMethod('GET', lambdaIntegration);
+        const authFn = new Function(this, 'authFn', {
+            runtime: Runtime.NODEJS_16_X,
+            handler: 'authorizer.handler',
+            code: Code.fromAsset(path.join(__dirname, '..', 'build', 'auth')),
+        });
+
+        const authorizer = new RequestAuthorizer(this, 'booksAuthorizer', {
+            handler: authFn,
+            identitySources: [IdentitySource.header('Authorization')]
+        });
+
+        api.root.addMethod('GET', lambdaIntegration, {
+            authorizer
+        });
 
         const cert = Certificate.fromCertificateArn(
             this,

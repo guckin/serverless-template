@@ -23,5 +23,6 @@ function bundleHandler(input, output) {
 }
 
 export default [
-    bundleHandler('src/hello-world-handler.ts', 'build/hello-world-handler.mjs'),
+    bundleHandler('src/hello-world-handler.ts', 'build/hello-world/hello-world-handler.mjs'),
+    bundleHandler('src/authorizer.ts', 'build/auth/authorizer.mjs'),
 ];
