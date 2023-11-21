@@ -1,6 +1,6 @@
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
-import { terser } from 'rollup-plugin-terser';
+import { terser } from 'rollup-plugin-minification';
 import typescript from '@rollup/plugin-typescript';
 import json from '@rollup/plugin-json';
 
@@ -14,7 +14,7 @@ function bundleHandler(input, output) {
         },
         plugins: [
             typescript(),
-            resolve({exportConditions: ["node"], preferBuiltins: true}),
+            resolve({exportConditions: ['node'], preferBuiltins: true}),
             commonjs(),
             terser(),
             json()
