@@ -23,5 +23,5 @@ function bundleHandler(input, output) {
 }
 
 export default [
-    bundleHandler('src/hello-world-handler.ts', 'build/hello-world-handler.mjs'),
+    bundleHandler('src/rest-api/rest-api-handler.ts', 'build/rest-api-handler.mjs'),
 ];

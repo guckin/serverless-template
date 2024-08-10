@@ -4,6 +4,8 @@ on:
   pull_request:
     types: [unlabeled, closed]
 
+permissions: write-all
+
 jobs:
   clean-up:
     runs-on: ubuntu-latest
