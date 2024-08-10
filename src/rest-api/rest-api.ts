@@ -6,14 +6,14 @@ import {
 
 export type Handler = (event: APIGatewayProxyEventV2) => Promise<APIGatewayProxyResultV2>;
 
-const getDogsHandler: Handler = async event => {
+const getDogsHandler: Handler = async () => {
     return {
         statusCode: 200,
         body: JSON.stringify({message: 'Hello from the REST API'}),
     };
 }
 
-const postDogsHandler: Handler = async event => {
+const postDogsHandler: Handler = async () => {
     return {
         statusCode: 201,
         body: JSON.stringify({message: 'Dog created'}),
