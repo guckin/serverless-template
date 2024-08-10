@@ -1,5 +1,5 @@
 {
-  "app": "npm run build && npx ts-node src/create-stack.ts",
+  "app": "npm run build && npx ts-node src/create-app.ts",
   "watch": {
     "include": [
       "**"
