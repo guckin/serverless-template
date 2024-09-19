@@ -1,12 +1,13 @@
-import {Stack, StackProps} from 'aws-cdk-lib';
+import {Duration, Stack, StackProps} from 'aws-cdk-lib';
 import * as path from 'path';
 import {Construct} from 'constructs';
-import {Code, Runtime, Function} from 'aws-cdk-lib/aws-lambda';
 import {Cors, EndpointType, LambdaIntegration, RestApi} from 'aws-cdk-lib/aws-apigateway';
 import {ARecord, HostedZone, RecordTarget} from 'aws-cdk-lib/aws-route53';
 import {ApiGateway} from 'aws-cdk-lib/aws-route53-targets';
-import {CertificateStack} from '../certificate/certificate.stack';
-
+import {CertificateStack} from '../certificate/certificate.stack.js';
+import {NodejsFunction} from 'aws-cdk-lib/aws-lambda-nodejs';
+import {bundlingOptions, nodeRuntime} from '../config.js';
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 export type RestApiStackProps = StackProps & {
   stage: string,
@@ -19,16 +20,15 @@ export class RestApiStack extends Stack {
   constructor(scope: Construct, id: string, props: RestApiStackProps) {
     super(scope, id, props);
 
-    const apiFunction = new Function(this, 'RestApiHandler', {
-      runtime: Runtime.NODEJS_18_X,
-      handler: 'rest-api-handler.handler',
-      code: Code.fromAsset(path.join(__dirname, '..', '..', 'build')),
-      environment: {
-        STAGE: props.stage
-      }
+    const fn = new NodejsFunction(this, 'RestApiHandler', {
+      entry: path.join(__dirname, './rest-api-handler.js'),
+      handler: 'handler',
+      timeout: Duration.seconds(100),
+      runtime: nodeRuntime,
+      bundling: bundlingOptions
     });
 
-    const lambdaIntegration = new LambdaIntegration(apiFunction);
+    const lambdaIntegration = new LambdaIntegration(fn);
 
     const api = new RestApi(this, `${props.stage}ApiServerlessTemplate`, {
       defaultCorsPreflightOptions: {

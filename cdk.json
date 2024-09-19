@@ -1,5 +1,5 @@
 {
-  "app": "npm run build && npx ts-node src/create-app.ts",
+  "app": "npm run build && node ./dist/create-app.js",
   "watch": {
     "include": [
       "**"
