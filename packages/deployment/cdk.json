@@ -1,5 +1,5 @@
 {
-  "app": "npm run build && node ./dist/create-app.js",
+  "app": "node ./dist/index.js",
   "watch": {
     "include": [
       "**"

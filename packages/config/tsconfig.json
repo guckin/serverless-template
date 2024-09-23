@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "target": "ESNext",
+    "declaration": true,
+    "esModuleInterop": true,
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "outDir": "dist",
+    "typeRoots": [
+      "./node_modules/@types"
+    ],
+    "sourceMap": true,
+  },
+  "exclude": [
+    "node_modules",
+    "cdk.out"
+  ],
+  "include": [
+    "src/**/*.ts",
+    "bin/**/*.ts",
+  ],
+}

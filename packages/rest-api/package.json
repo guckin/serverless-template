@@ -1,0 +1,44 @@
+{
+  "name": "rest-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.109",
+    "@types/node": "^18.11.11",
+    "@types/prettier": "2.6.0",
+    "@typescript-eslint/eslint-plugin": "^5.53.0",
+    "@typescript-eslint/parser": "^5.53.0",
+    "aws-cdk": "^2.151.0",
+    "aws-cdk-lib": "2.151.0",
+    "constructs": "^10.0.0",
+    "esbuild": "^0.24.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-unused-imports": "^2.0.0",
+    "ts-jest": "^29.0.5",
+    "ts-node": "^10.9.1",
+    "tslib": "^2.5.0",
+    "typescript": "~4.9.3",
+    "typescript-eslint": "^8.6.0"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.279.0",
+    "@aws-sdk/client-secrets-manager": "^3.279.0",
+    "@aws-sdk/util-dynamodb": "^3.279.0",
+    "source-map-support": "^0.5.21",
+    "config": "workspace:^"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
